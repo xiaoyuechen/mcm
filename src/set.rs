@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with mcm.  If not, see <http://www.gnu.org/licenses/>.
 
-use crate::primitive::Natural;
+use crate::primitive::Nat;
 use crate::primitive::Odd;
 
 pub type Set<T> = std::collections::HashSet<T>;
@@ -41,7 +41,7 @@ macro_rules! from_x_impl {
     };
 }
 
-from_x_impl! {Natural}
+from_x_impl! {Nat}
 from_x_impl! {Odd}
 
 #[cfg(test)]
@@ -50,12 +50,12 @@ mod tests {
 
     #[test]
     fn from_u64_natural_set_test() {
-        use crate::primitive::Natural;
+        use crate::primitive::Nat;
 
         assert_eq!(
-            Set::<Natural>::from_u64([0, 1, 1, 2, 3]),
-            Set::<Natural>::from(
-                [Natural::new(1), Natural::new(2), Natural::new(3)].map(|x| x.unwrap())
+            Set::<Nat>::from_u64([0, 1, 1, 2, 3]),
+            Set::<Nat>::from(
+                [Nat::new(1), Nat::new(2), Nat::new(3)].map(|x| x.unwrap())
             )
         );
     }

@@ -19,15 +19,49 @@
 mod primitive;
 mod set;
 
-use primitive::{Natural, Odd};
-use set::Set;
+use primitive::{Nat, Odd};
+use set::{FromU64, Set};
 
-pub fn synthesize_multiplier_block(t: &Set<Natural>) {
+pub fn synthesize_multiplier_block(t: &Set<Nat>) -> Set<Odd> {
     let mut t = preprocess(t);
     let b = max_bitwidth(&t);
+    let mut r = Set::<Odd>::from_u64([1]);
+    let mut w = Set::<Odd>::from_u64([1]);
+    let mut s = Set::<Odd>::from_u64([1]);
+
+    while !t.is_empty() {
+        // Optimal part
+        while !w.is_empty() {
+            r.extend(&w);
+            s.extend(vertex_fundamental_set(&r, &w, b));
+            for wi in &w {
+                s.remove(wi);
+            }
+            w.clear();
+            for ti in s.intersection(&t).cloned().collect::<Vec<_>>() {
+                synthesize(ti, &mut w, &mut t);
+            }
+        }
+        // Heuristic part
+        if !t.is_empty() {
+            let s = huristic(&r, &s, &t);
+            synthesize(s, &mut w, &mut t)
+        }
+    }
+
+    r
 }
 
-fn preprocess(t: &Set<Natural>) -> Set<Odd> {
+fn huristic(r: &Set<Odd>, s: &Set<Odd>, t: &Set<Odd>) -> Odd {
+    todo!()
+}
+
+fn synthesize(s: Odd, w: &mut Set<Odd>, t: &mut Set<Odd>) {
+    w.insert(s);
+    t.remove(&s);
+}
+
+fn preprocess(t: &Set<Nat>) -> Set<Odd> {
     t.iter()
         .map(|x| x.get())
         .map(|x| x >> x.trailing_zeros())
@@ -47,7 +81,7 @@ struct AConfig {
 
 impl AConfig {
     fn new(l1: u32, l2: u32, s: bool) -> Option<Self> {
-        if l1 == 0 || l2 == 0 {
+        if l1 == 0 || l2 == 0 && l1 != l2 {
             Some(AConfig { l1, l2, s })
         } else {
             None
@@ -63,17 +97,17 @@ fn a_op(u: Odd, v: Odd, p: &AConfig) -> Odd {
     Odd::new(a as u64).unwrap()
 }
 
-// fn vertex_fundamental_set(u: &HashSet<u64>, v: &HashSet<u64>) -> HashSet<u64> {}
+fn vertex_fundamental_set(u: &Set<Odd>, v: &Set<Odd>, b: u32) -> Set<Odd> {
+    todo!()
+}
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use primitive::*;
-    use set::*;
 
     #[test]
     fn preprocess_test() {
-        let t = Set::<Natural>::from_u64([1, 2, 4, 6, 7]);
+        let t = Set::<Nat>::from_u64([1, 2, 4, 6, 7]);
         let tp = preprocess(&t);
         assert_eq!(tp, Set::<Odd>::from_u64([1, 3, 7]));
     }

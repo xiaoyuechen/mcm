@@ -16,7 +16,7 @@
 // You should have received a copy of the GNU General Public License
 // along with mcm.  If not, see <http://www.gnu.org/licenses/>.
 
-pub type Natural = core::num::NonZeroU64;
+pub type Nat = core::num::NonZeroU64;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
 pub struct Odd(u64);
