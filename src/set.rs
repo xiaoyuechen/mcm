@@ -49,14 +49,12 @@ mod tests {
     use super::*;
 
     #[test]
-    fn from_u64_natural_set_test() {
+    fn from_u64_nat_set_test() {
         use crate::primitive::Nat;
 
         assert_eq!(
             Set::<Nat>::from_u64([0, 1, 1, 2, 3]),
-            Set::<Nat>::from(
-                [Nat::new(1), Nat::new(2), Nat::new(3)].map(|x| x.unwrap())
-            )
+            Set::<Nat>::from([1, 2, 3].map(|x| Nat::new(x).unwrap()))
         );
     }
 
@@ -64,7 +62,7 @@ mod tests {
     fn from_u64_odd_set_test() {
         assert_eq!(
             Set::<Odd>::from_u64([0, 1, 1, 2, 3]),
-            Set::<Odd>::from([Odd::new(1), Odd::new(3)].map(|x| x.unwrap()))
+            Set::<Odd>::from([1, 3].map(|x| Odd::new(x).unwrap()))
         );
     }
 }
